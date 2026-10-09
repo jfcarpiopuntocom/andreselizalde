@@ -21,27 +21,19 @@ body{display:grid;place-items:center;min-height:100vh;min-height:100dvh;}
 .toast.show{opacity:1}
 @media (prefers-reduced-motion:reduce){.toast{transition:none}}
 
-/* Mobile editorial montage cut exclusively from the approved original JPG. */
-.mobile-layout{display:none}
-@media(max-width:700px) and (orientation:portrait){
- html,body{height:100%;height:100dvh;overflow:hidden}
- body{display:block;min-height:100dvh}
+/* Portrait is deliberately gated: full original composition is available in landscape only. */
+.rotate-gate{display:none}
+@media (orientation:portrait) and (pointer:coarse){
+ body{display:block;overflow:hidden}
  .stage{display:none}
- .mobile-layout{display:grid;width:100vw;height:100vh;height:100dvh;grid-template-rows:minmax(105px,19fr) minmax(150px,34fr) minmax(100px,20fr) minmax(100px,20fr) minmax(20px,4fr);gap:clamp(3px,.7vh,7px);padding:env(safe-area-inset-top,0px) 6px env(safe-area-inset-bottom,0px);overflow:hidden;background:radial-gradient(ellipse at 70% 25%,#382266,#080511 72%)}
- .m-head{display:grid;grid-template-columns:72% 28%;gap:3px;min-height:0}
- .m-center{display:grid;grid-template-columns:1fr 50% 1fr;gap:3px;min-height:0;overflow:hidden;border:1px solid #c58bf96b;border-radius:8px;background:#181026}
- .m-center .m-slice{min-height:0}
- .m-row{display:grid;grid-template-columns:1fr 1fr;gap:5px;min-height:0}
- .m-slice{position:relative;overflow:hidden;background-color:#090719;background-repeat:no-repeat;border-radius:8px;box-shadow:inset 0 0 0 1px #d7a3ff55}
- .m-head .m-slice{border-radius:2px}
- button.m-slice{width:100%;border:1px solid #a68cff88;cursor:pointer;padding:0;touch-action:manipulation}
- button.m-slice:focus-visible{outline:2px solid #aaffff;outline-offset:-3px}
- .m-slice:after{content:'';position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 15px #0b0714aa}
- .m-footer{font:600 clamp(8px,2.1vw,12px)/1.1 Georgia,serif;letter-spacing:.19em;display:flex;justify-content:center;align-items:center;text-align:center;color:#f7d5ea}
- .m-center button{border:0}
- .m-eye{position:absolute;width:4px;height:4px;background:#efffff;border-radius:50%;box-shadow:0 0 3px #9dfbff;z-index:2;pointer-events:none}
- .m-eye.l{left:46%;top:50%}.m-eye.r{left:60%;top:50%}
- .toast{bottom:calc(14px + env(safe-area-inset-bottom,0px));font-size:12px}
+ .rotate-gate{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:calc(24px + env(safe-area-inset-top)) 24px calc(24px + env(safe-area-inset-bottom));text-align:center;color:#fff9ed;background:radial-gradient(circle at 50% 38%,#4b215e 0%,#170c2b 48%,#060412 100%);font:600 17px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+ .rotate-gate svg{width:90px;height:90px;filter:drop-shadow(0 0 25px #d754e7)}
+ .rotate-gate h1{margin:0;font-size:clamp(27px,8vw,42px);line-height:1.05;letter-spacing:-.045em}
+ .rotate-gate p{max-width:320px;margin:0;color:#cfc4e9;font-size:15px;font-weight:400}
+ .rotate-gate strong{color:#8ff5ff}
+}
+@media (orientation:landscape){
+ .stage{width:min(100vw,150vh);width:min(100vw,150dvh);max-width:100vw;height:auto;max-height:100dvh;aspect-ratio:3/2}
 }
 </style>
 </head>
@@ -54,13 +46,10 @@ body{display:grid;place-items:center;min-height:100vh;min-height:100dvh;}
   <a class="hit h4" href="javascript:void(0)" data-msg="Librojuegos: próximamente" aria-label="Librojuegos"></a>
   <a class="hit ha" href="javascript:void(0)" data-msg="¿Y ahora con qué vamos a hacer ahora?" aria-label="Avatar"></a>
 </div>
-<div class="mobile-layout" id="mobile">
- <div class="m-head"><div class="m-slice" data-crop="135,5,800,250" role="img" aria-label="Hueveando a Andrés Elizalde"></div><button class="m-slice" id="mobileAvatar" data-crop="1108,22,410,238" aria-label="Hablar con el presentador"><span class="m-eye l" id="ml"></span><span class="m-eye r" id="mr"></span></button></div>
- <div class="m-center"><div class="m-slice" data-crop="170,260,390,640" aria-hidden="true"></div><div class="m-slice" data-crop="513,255,505,645" role="img" aria-label="Andrés rodeado de mundos fantásticos"></div><div class="m-slice" data-crop="970,260,360,640" aria-hidden="true"></div></div>
- <div class="m-row"><button class="m-slice" data-crop="65,415,445,175" data-msg="Tests de cultura general: próximamente" aria-label="Tests de cultura general"></button><button class="m-slice" data-crop="1060,350,430,260" data-msg="Tests de IQ: próximamente" aria-label="Tests de IQ"></button></div>
- <div class="m-row"><button class="m-slice" data-crop="44,620,495,320" data-msg="Puzzles y acertijos: próximamente" aria-label="Puzzles y acertijos"></button><button class="m-slice" data-crop="1012,625,462,322" data-msg="Librojuegos: próximamente" aria-label="Librojuegos"></button></div>
- <div class="m-footer">JUEGA · PIENSA · RÍETE · REPITE</div>
-</div>
+<aside class="rotate-gate" aria-label="Gira el teléfono para jugar">
+<svg viewBox="0 0 100 100" aria-hidden="true" fill="none" stroke="#8ff5ff" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"><rect x="36" y="12" width="29" height="49" rx="5"/><path d="M15 61a39 39 0 0 0 68 8M83 69v14H69"/><path d="M23 54a39 39 0 0 1 59-21M82 33V19H68"/></svg>
+<h1>Andrés, gira el teléfono.</h1><p>Este universo se disfruta <strong>en horizontal</strong>. Gira tu celular para entrar.</p>
+</aside>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script>
 (()=>{
@@ -68,23 +57,8 @@ body{display:grid;place-items:center;min-height:100vh;min-height:100dvh;}
   let t=0;
   function flash(msg){toast.textContent=msg;toast.classList.add('show');clearTimeout(t);t=setTimeout(()=>toast.classList.remove('show'),2200)}
   document.querySelectorAll('.hit').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();flash(el.dataset.msg)}));
-  document.querySelectorAll('.mobile-layout [data-msg]').forEach(el=>el.addEventListener('click',()=>flash(el.dataset.msg)));
 
-  // Cropping uses the very same embedded JPG data URL; no artwork reconstruction.
-  const jpg=document.querySelector('.art').getAttribute('src');
-  document.querySelectorAll('[data-crop]').forEach(el=>{
-    const [x,y,w,h]=el.dataset.crop.split(',').map(Number);
-    el.style.backgroundImage='url("'+jpg+'")';
-    el.style.backgroundSize=(1536/w*100)+'% '+(1024/h*100)+'%';
-    el.style.backgroundPosition=(x/(1536-w)*100)+'% '+(y/(1024-h)*100)+'%';
-  });
-  const mobileAvatar=document.getElementById('mobileAvatar');
-  mobileAvatar.addEventListener('click',()=>flash('¿QUÉ VAMOS A HACER AHORA, ANDRÉS?'));
-  const eyes=[document.getElementById('ml'),document.getElementById('mr')];
-  document.addEventListener('pointermove',event=>{
-    const b=mobileAvatar.getBoundingClientRect(),dx=(event.clientX-b.left-b.width/2)/Math.max(b.width,1),dy=(event.clientY-b.top-b.height/2)/Math.max(b.height,1);
-    eyes.forEach(e=>e.style.transform='translate('+Math.max(-3,Math.min(3,dx*6))+'px,'+Math.max(-3,Math.min(3,dy*6))+'px)');
-  },{passive:true});
+
 })();
 </script>
 </body>
