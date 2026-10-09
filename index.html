@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0a0c21">
+<meta name="description" content="Hueveando a Andrés Elizalde: pruebas de cultura, IQ, acertijos, librojuegos y experimentos para un amigo de toda la vida.">
+<title>Hueveando a Andrés Elizalde — El laboratorio</title>
+<style>
+:root{color-scheme:dark;--ink:#080b1d;--panel:#111831;--cream:#fff6e8;--cyan:#71eddd;--lilac:#a89eff;--pink:#fa7ea9;--line:rgba(206,226,255,.22)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100svh;overflow-x:hidden;background:var(--ink);color:var(--cream);font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-2;background:radial-gradient(ellipse at 90% 0%,#3b2a72 0%,transparent 39%),radial-gradient(ellipse at 0% 70%,#054b65 0%,transparent 48%),linear-gradient(160deg,#080b1d 0%,#12102b 75%,#080b1d)}
+body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:20;opacity:.17;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(255,255,255,.045) 4px);mix-blend-mode:screen}
+button,a{-webkit-tap-highlight-color:transparent}a{color:inherit}a:focus-visible,button:focus-visible{outline:3px solid var(--cyan);outline-offset:5px}
+.wrap{max-width:1160px;margin:auto;padding:22px clamp(18px,4.8vw,58px) 56px}
+nav{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:94px}
+.brand{display:flex;align-items:center;gap:10px;font-size:11px;letter-spacing:.19em;font-weight:800;text-transform:uppercase;color:var(--cyan)}
+.brand .logo{width:28px;height:28px;border:2px solid currentColor;display:grid;place-items:center;transform:rotate(-12deg);border-radius:8px;font-size:16px}
+.avatar-wrap{display:flex;align-items:center;gap:12px;z-index:2}
+.bubble{max-width:165px;border:1px solid #626d99;padding:8px 11px;border-radius:12px 12px 3px 12px;color:#d2d9f2;background:#151b38;font:600 10px/1.4 ui-monospace,SFMono-Regular,Consolas,monospace}
+.avatar{position:relative;width:89px;height:93px;flex:none;border:2px solid var(--cyan);border-radius:17px;background:repeating-linear-gradient(0deg,#091326,#091326 3px,#15283c 4px);box-shadow:0 0 25px #42dcc655,inset 0 0 14px #000;overflow:hidden;transform:rotate(3deg)}
+.avatar svg{width:100%;height:100%;display:block;filter:drop-shadow(0 0 7px #71eddd55)}
+.avatar .jaw{transform-origin:46px 66px;animation:jaw 4s ease-in-out infinite}
+.avatar .pupil{transition:transform 100ms ease-out}
+@keyframes jaw{0%,88%,100%{transform:translateY(0)}91%,96%{transform:translateY(3px)}}
+.hero{position:relative;padding:clamp(36px,7vw,90px) 0 38px;max-width:940px}
+.eyebrow{color:var(--cyan);text-transform:uppercase;font-size:11px;letter-spacing:.27em;font-weight:850;display:flex;gap:12px;align-items:center}
+.eyebrow:before{content:"";width:25px;height:2px;background:var(--cyan)}
+h1{margin:20px 0 24px;font-size:clamp(3.45rem,11vw,8.5rem);line-height:.87;letter-spacing:-.07em;font-weight:930;max-width:900px}
+h1 .first{display:block;color:#fff5e5}h1 .name{display:block;color:transparent;background:linear-gradient(105deg,var(--cyan),#9b9cff 53%,var(--pink) 100%);background-clip:text;-webkit-background-clip:text;filter:drop-shadow(0 0 25px #89acff33)}
+.lede{max-width:650px;color:#bac8e5;font-size:clamp(16px,2.2vw,20px);line-height:1.55;margin:26px 0}
+.stats{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:28px}
+.chip{border:1px solid #7181ae60;border-radius:99px;padding:8px 12px;font:700 10px/1.3 ui-monospace,monospace;letter-spacing:.1em;color:#dde6fb;background:#111c37b0}
+.chip.live{color:var(--cyan);border-color:#71eddd77}.orbit{position:absolute;right:-5%;top:6%;width:35%;aspect-ratio:1;max-width:380px;border:1px solid #78e8fa26;border-radius:50%;pointer-events:none;box-shadow:0 0 0 30px #9bcfff05,0 0 0 64px #c1a3ff05;animation:spin 36s linear infinite}
+.orbit:before,.orbit:after{content:"";position:absolute;width:9px;height:9px;background:var(--cyan);box-shadow:0 0 25px var(--cyan);border-radius:50%;top:13%;left:13%}.orbit:after{background:var(--pink);top:70%;left:91%;box-shadow:0 0 25px var(--pink)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.section-title{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:26px;margin-top:38px;margin-bottom:22px}
+.section-title h2{margin:0;font:800 clamp(17px,2.8vw,24px)/1.1 ui-monospace,Consolas,monospace;text-transform:uppercase;letter-spacing:-.035em}.section-title span{font:700 10px monospace;color:#97a4c6;letter-spacing:.12em}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.card{min-width:0;min-height:238px;position:relative;overflow:hidden;text-align:left;text-decoration:none;display:flex;flex-direction:column;justify-content:space-between;padding:25px;background:linear-gradient(145deg,#17203dd9,#0c1029);border:1px solid var(--line);border-radius:19px;transition:transform .2s,border-color .2s,box-shadow .2s}
+.card:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 15px 45px #0008,0 0 32px color-mix(in srgb,var(--accent) 20%,transparent)}
+.card:nth-child(1){--accent:#71eddd}.card:nth-child(2){--accent:#ba9aff}.card:nth-child(3){--accent:#ffaf7a}.card:nth-child(4){--accent:#fa7ea9}
+.card:before{content:"";position:absolute;inset:auto -25px -85px auto;width:210px;height:210px;border:1px solid var(--accent);border-radius:40%;transform:rotate(28deg);box-shadow:0 0 0 23px #ffffff05,0 0 0 55px #ffffff04}
+.card:nth-child(2):before{border-radius:12%;transform:rotate(44deg)}.card:nth-child(3):before{border-radius:50% 15% 50% 15%}.card:nth-child(4):before{border-radius:8% 55% 12% 40%}
+.card-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.symbol{font:700 26px/1 ui-monospace,monospace;color:var(--accent);text-shadow:0 0 22px var(--accent)}
+.soon{font:700 10px/1.3 ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#b3bfd8;padding:7px 10px;border:1px solid #7e8ca54f;border-radius:50px;background:#11182d}
+.card h3{position:relative;margin:18px 0 6px;font-size:clamp(23px,3vw,33px);line-height:1.05;letter-spacing:-.04em;max-width:270px}
+.card p{position:relative;margin:0;color:#bbc7df;font-size:13px;line-height:1.45;max-width:290px}
+.card[data-coming]{cursor:default}.card[data-coming]:hover{transform:none}
+.experiment{margin:38px 0 0;padding:25px;border:1px solid #69e8d66e;background:linear-gradient(105deg,#153643,#171531);border-radius:20px;display:flex;gap:24px;align-items:center;justify-content:space-between}
+.experiment .kicker{font:800 10px monospace;letter-spacing:.18em;color:var(--cyan);text-transform:uppercase}
+.experiment h2{font-size:clamp(23px,4vw,38px);letter-spacing:-.045em;margin:8px 0}
+.experiment p{color:#b9d0e1;margin:0;font-size:14px;line-height:1.45}
+.go{display:inline-flex;align-items:center;justify-content:center;flex:none;min-height:46px;min-width:150px;padding:0 18px;border-radius:99px;text-decoration:none;color:#10162a;background:var(--cyan);font-weight:850;font-size:13px;box-shadow:0 0 23px #71eddd50}
+.go:hover{background:white}
+.footer{border-top:1px solid var(--line);margin-top:65px;padding-top:22px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;color:#8f9cbb;font-size:11px;line-height:1.5}
+.footer strong{color:#dde8fa}
+@media(max-width:640px){.wrap{padding:12px 18px 38px}nav{min-height:91px}.bubble{max-width:110px;font-size:9px}.avatar{width:74px;height:80px}.hero{padding-top:37px}.orbit{right:-13%;top:15%;width:54%;opacity:.45}h1{font-size:clamp(3.2rem,12.4vw,5.2rem)}.cards{grid-template-columns:1fr;gap:12px}.card{min-height:174px;padding:21px}.card h3{font-size:26px}.experiment{flex-direction:column;align-items:flex-start}.go{width:100%}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav aria-label="Principal"><div class="brand"><span class="logo" aria-hidden="true">¿</span> EXPERIMENTOS / A.E.</div>
+<div class="avatar-wrap"><div class="bubble" id="speech" aria-live="polite">¿Y ahora con qué me van a salir?</div>
+<div class="avatar" id="avatar" role="img" aria-label="Avatar retrofuturista de Andrés, de gran mandíbula y ojos que siguen el movimiento">
+<svg viewBox="0 0 92 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+<defs><linearGradient id="face" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#f6bd95"/><stop offset=".54" stop-color="#e39097"/><stop offset="1" stop-color="#925da8"/></linearGradient></defs>
+<path d="M24 88 14 99H80L67 88" fill="#233d5b" stroke="#60d8d8" stroke-width="2"/>
+<path d="M16 35Q14 10 45 6Q76 6 77 35L74 65 68 87Q49 100 23 85L17 64Z" fill="url(#face)" stroke="#362443" stroke-width="2.5"/>
+<path d="M13 35Q4 8 31 6Q40 -4 56 3Q86 0 80 36L74 28 68 19 49 23 28 19Z" fill="#f1dc93" stroke="#59456e" stroke-width="3"/>
+<path d="M23 42Q32 36 42 42M50 42Q59 36 69 42" fill="none" stroke="#392c47" stroke-width="3"/>
+<path d="M23 47Q32 41 42 47L41 54Q32 58 23 52ZM50 47Q59 41 69 47L68 52Q59 58 50 54Z" fill="#fbf8f2" stroke="#533b53" stroke-width="1.8"/>
+<circle class="pupil" id="eyeL" cx="33" cy="49" r="4.4" fill="#17283b"/><circle class="pupil" id="eyeR" cx="59" cy="49" r="4.4" fill="#17283b"/>
+<path d="M46 49 42 63Q45 67 50 63" fill="none" stroke="#985d75" stroke-width="2.5"/>
+<g class="jaw"><path d="M20 70Q27 65 44 70Q61 65 72 70L69 88Q47 100 23 86Z" fill="#d98794" stroke="#7b496f" stroke-width="2"/><path d="M30 74Q45 81 63 74" fill="none" stroke="#5f324d" stroke-width="3"/><path d="M31 77H62" stroke="#fff0dd" stroke-width="2.6" stroke-linecap="round"/></g>
+<path d="M14 43 10 55 17 59M77 43 82 55 75 59" fill="#d390aa" stroke="#7b496f" stroke-width="2"/>
+</svg></div></div></nav>
+<main>
+<section class="hero"><div class="orbit" aria-hidden="true"></div><div class="eyebrow">Laboratorio de amistades peligrosamente largas</div>
+<h1><span class="first">Hueveando</span><span class="first">a</span><span class="name">Andrés<br>Elizalde.</span></h1>
+<p class="lede">Una colección de pruebas de conocimiento, trampas mentales, universos imposibles y desafíos concebidos con un único propósito: que Andrés no tenga un momento de tranquilidad intelectual.</p>
+<div class="stats"><span class="chip live">● LABORATORIO ABIERTO</span><span class="chip">01 EXPERIMENTO ACTIVO</span><span class="chip">04 LABORATORIOS EN CONSTRUCCIÓN</span></div>
+</section>
+<section aria-labelledby="labs"><div class="section-title"><h2 id="labs">Próximas torturas intelectuales</h2><span>EDICIÓN AMIGOS DESDE LA ADOLESCENCIA</span></div>
+<div class="cards">
+<article class="card" data-coming><div class="card-top"><span class="symbol" aria-hidden="true">◎</span><span class="soon">Próximamente</span></div><div><h3>Tests de cultura general</h3><p>Historia, geografía y esas cosas que Andrés asegura saber.</p></div></article>
+<article class="card" data-coming><div class="card-top"><span class="symbol" aria-hidden="true">∑</span><span class="soon">Próximamente</span></div><div><h3>Tests de IQ</h3><p>Patrones, números y lógica. La autoconfianza no suma puntos.</p></div></article>
+<article class="card" data-coming><div class="card-top"><span class="symbol" aria-hidden="true">◇</span><span class="soon">Próximamente</span></div><div><h3>Puzzles y acertijos</h3><p>Pequeños laberintos para grandes dolores de cabeza.</p></div></article>
+<article class="card" data-coming><div class="card-top"><span class="symbol" aria-hidden="true">✧</span><span class="soon">Próximamente</span></div><div><h3>Librojuegos</h3><p>Andrés elige su destino. El destino probablemente se ríe.</p></div></article>
+</div></section>
+<section class="experiment" aria-labelledby="exp"><div><div class="kicker">Experimento 001 · Disponible</div><h2 id="exp">NEXUS: El espiral de Andrés</h2><p>Fractales, colores imposibles y viajes geométricos desde el navegador.</p></div><a class="go" href="./el-espiral-de-andres.html">Entrar al espiral ↗</a></section>
+</main>
+<footer class="footer"><span><strong>Hueveando a Andrés Elizalde</strong> · Un homenaje a la amistad que se niega a madurar.</span><span>HECHO PARA MOLESTAR CON CARIÑO · © 2026</span></footer>
+</div>
+<script>
+(function(){
+const eyes=[document.getElementById('eyeL'),document.getElementById('eyeR')],avatar=document.getElementById('avatar'),speech=document.getElementById('speech');
+let x=0,y=0,raf=0;
+function draw(){raf=0;for(const e of eyes)e.style.transform='translate('+x.toFixed(2)+'px,'+y.toFixed(2)+'px)'}
+function target(clientX,clientY){const r=avatar.getBoundingClientRect(),mx=r.left+r.width/2,my=r.top+r.height/2,dx=clientX-mx,dy=clientY-my,length=Math.hypot(dx,dy)||1,scale=Math.min(4.2,length/65);x=dx/length*scale;y=dy/length*scale;if(!raf)raf=requestAnimationFrame(draw)}
+document.addEventListener('pointermove',e=>target(e.clientX,e.clientY),{passive:true});
+document.addEventListener('pointerdown',e=>target(e.clientX,e.clientY),{passive:true});
+document.addEventListener('focusin',e=>{const r=e.target.getBoundingClientRect();target(r.left+r.width/2,r.top+r.height/2)});
+let phrases=['¿Y ahora con qué me van a salir?','Andrés, esto no cuenta como estudiar.','Aquí se evalúa el ego, principalmente.','No mires las respuestas, Andrés.','Los ojos lo ven TODO.'],i=0;
+avatar.addEventListener('click',()=>{i=(i+1)%phrases.length;speech.textContent=phrases[i]});
+})();
+</script>
+</body>
+</html>
