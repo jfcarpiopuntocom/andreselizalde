@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=5">
   <meta name="theme-color" content="#090711">
-  <meta name="description" content="El Espiral de Andrés Elizalde: un universo fractal interactivo con efectos cromáticos, mandalas y exploración táctil. Un experimento de J. F. Carpio.">
+  <meta name="description" content="El Espiral de Andrés Elizalde: un viaje Mandelbrot ultrarrápido, psicodélico y táctil, con presets legendarios y color ácida en tiempo real.">
   <meta property="og:title" content="El Espiral de Andrés Elizalde · NEXUS">
-  <meta property="og:description" content="Entra al Nexus. Explora un fractal vivo, desde tu celular.">
+  <meta property="og:description" content="Entra al Nexus. Recorre presets mandelbrotianos legendarios con un viaje ácido ultrarrápido.">
   <meta property="og:type" content="website">
   
   <style>
@@ -72,6 +72,7 @@
     </div>
     <div class="sliders">
       <label class="range-group"><span>INTENSIDAD <output id="intensityVal">65%</output></span><input id="intensity" aria-label="Intensidad visual" type="range" min="0" max="100" step="5" value="65"></label>
+      <label class="range-group"><span>VELOCIDAD <output id="speedVal">180%</output></span><input id="speed" aria-label="Velocidad del viaje" type="range" min="100" max="360" step="10" value="180"></label>
       <label class="range-group"><span>DETALLE <output id="detailVal">320</output></span><input id="detail" aria-label="Iteraciones de detalle" type="range" min="100" max="600" step="20" value="320"></label>
     </div>
     <div class="deck-bottom"><span id="gestureHint">TOCA PARA ENTRAR · ARRASTRA PARA EXPLORAR · DOS DEDOS PARA ZOOM</span><button id="reduceBtn" type="button" aria-pressed="false">Movimiento reducido</button></div>
@@ -87,19 +88,21 @@
   const world = $('world');
   const state = {
     cx: -0.743643887037151, cy: 0.13182590420533, h: 0.00016,
-    iterations: 320, intensity: .65, motion: !matchMedia('(prefers-reduced-motion: reduce)').matches,
+    iterations: 320, intensity: .82, speed: 1.8, motion: !matchMedia('(prefers-reduced-motion: reduce)').matches,
     reduced: matchMedia('(prefers-reduced-motion: reduce)').matches,
-    mandala: false, travel: false, viewDirty: true, active: 'espiral'
+    mandala: true, travel: false, viewDirty: true, active: 'espiral', palette: 1
   };
   const presets = [
-    { id:'espiral', label:'El espiral', cx:-0.743643887037151,cy:0.13182590420533,h:0.00016,iter:320 },
-    { id:'universo',label:'El universo',cx:-.6,cy:0,h:2.6,iter:180 },
-    { id:'caballitos',label:'Caballitos',cx:-.7463,cy:.1102,h:.012,iter:300 },
-    { id:'triple',label:'Tres cuerpos',cx:-.088,cy:.654,h:.012,iter:300 },
-    { id:'doble',label:'Abismo doble',cx:-.761574,cy:-.0847596,h:.004,iter:360 },
-    { id:'mini',label:'Mini universo',cx:-1.768778833,cy:-.001738996,h:.00045,iter:380 }
-  ];
-  const VERTEX = `attribute vec2 aPosition;varying vec2 uv;void main(){uv=(aPosition+1.0)*0.5;gl_Position=vec4(aPosition,0.0,1.0);}`;
+    { id:'espiral', label:'Espiral central', cx:-0.743643887037151,cy:0.13182590420533,h:0.00016,iter:300,palette:1 },
+    { id:'seahorse', label:'Seahorse Valley', cx:-0.745,cy:0.113,h:0.05,iter:240,palette:2 },
+    { id:'elephant', label:'Elephant Valley', cx:0.275,cy:0.0,h:0.18,iter:210,palette:0 },
+    { id:'triple', label:'Triple Spiral', cx:-0.088,cy:0.654,h:0.012,iter:280,palette:1 },
+    { id:'lightning', label:'Lightning', cx:-1.25066,cy:0.02012,h:0.018,iter:260,palette:3 },
+    { id:'spider', label:'Spider', cx:-1.4063,cy:0.0,h:0.042,iter:230,palette:2 },
+    { id:'mini', label:'Mini Mandelbrot', cx:-1.7497,cy:0.0,h:0.06,iter:240,palette:0 },
+    { id:'caballitos', label:'Caballitos', cx:-0.7463,cy:0.1102,h:0.012,iter:300,palette:2 },
+    { id:'tendrils', label:'Tendrils', cx:-0.7269,cy:0.1889,h:0.018,iter:280,palette:3 }
+  ];  const VERTEX = `attribute vec2 aPosition;varying vec2 uv;void main(){uv=(aPosition+1.0)*0.5;gl_Position=vec4(aPosition,0.0,1.0);}`;
   const FRACTAL = `
 precision highp float;varying vec2 uv;
 uniform vec2 uCenter;uniform float uHeight;uniform float uAspect;uniform int uIterations;
@@ -128,7 +131,7 @@ void main(){
 }`;
   const POST = `
 precision highp float;varying vec2 uv;
-uniform sampler2D uFractal;uniform float uTime;uniform float uIntensity;uniform float uMotion;uniform float uMandala;uniform vec2 uResolution;
+uniform sampler2D uFractal;uniform float uTime;uniform float uIntensity;uniform float uMotion;uniform float uMandala;uniform vec2 uResolution;uniform float uPalette;
 const float TAU=6.283185307179586;
 void main(){
   vec2 pos=uv-.5;
@@ -153,13 +156,24 @@ void main(){
   vec3 color=vec3(texture2D(uFractal,clamp(texuv+offset,0.,1.)).r,
                  texture2D(uFractal,clamp(texuv,0.,1.)).g,
                  texture2D(uFractal,clamp(texuv-offset,0.,1.)).b);
-  vec3 echo=texture2D(uFractal,clamp(texuv+vec2(.0014*sin(t*.65),.0015*cos(t*.5))*uMotion*uIntensity,0.,1.)).rgb;
-  color=mix(color,echo,.11*uIntensity);
-  float glow=1.0+.08*uIntensity+.035*uIntensity*sin(t*.61+radius*9.0);
+  vec3 echo=texture2D(uFractal,clamp(texuv+vec2(.0022*sin(t*.95),.0024*cos(t*.72))*uMotion*uIntensity,0.,1.)).rgb;
+  color=mix(color,echo,.18*uIntensity);
+  vec3 acid=.56+.44*cos(TAU*(vec3(.02,.37,.71)+dot(color,vec3(.25,.6,.15))*1.25+t*vec3(.06,.04,.03)));
+  vec3 ultraviolet=.52+.48*cos(TAU*(vec3(.74,.08,.32)+dot(color,vec3(.35,.2,.55))*1.15+t*vec3(.03,.05,.07)));
+  vec3 sunset=.55+.45*cos(TAU*(vec3(.92,.12,.28)+dot(color,vec3(.45,.25,.3))*1.05+t*vec3(.025,.018,.015)));
+  vec3 mint=.52+.48*cos(TAU*(vec3(.18,.48,.82)+dot(color,vec3(.28,.46,.26))*1.2+t*vec3(.018,.025,.031)));
+  float p=floor(uPalette+.5);
+  vec3 palette=color;
+  if(p<.5) palette=mix(color,sunset,.58+.12*sin(t*.4));
+  else if(p<1.5) palette=mix(color,acid,.72);
+  else if(p<2.5) palette=mix(color,ultraviolet,.76);
+  else palette=mix(color,mint,.74);
+  color=palette;
+  float glow=1.05+.16*uIntensity+.07*uIntensity*sin(t*1.1+radius*12.0);
   color*=glow;
-  float vignette=1.0-.26*smoothstep(.20,.77,length((uv-.5)*vec2(ratio,1.)));
+  float vignette=1.0-.21*smoothstep(.18,.77,length((uv-.5)*vec2(ratio,1.)));
   color*=vignette;
-  color=pow(max(color,vec3(0.)),vec3(.93));
+  color=pow(max(color,vec3(0.)),vec3(.9));
   gl_FragColor=vec4(min(color,vec3(1.)),1.);
 }`;
 
@@ -183,7 +197,7 @@ void main(){
       if(!precision||precision.precision<16)throw Error('Fragment highp not supported');
       programFractal=link(VERTEX,FRACTAL);programPost=link(VERTEX,POST);
       fu=uniforms(programFractal,['uCenter','uHeight','uAspect','uIterations']);
-      pu=uniforms(programPost,['uFractal','uTime','uIntensity','uMotion','uMandala','uResolution']);
+      pu=uniforms(programPost,['uFractal','uTime','uIntensity','uMotion','uMandala','uResolution','uPalette']);
       buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
       gpuReady=true;
       canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();gpuReady=false;status('GPU DESCONECTADA · RECARGA');});
@@ -195,7 +209,7 @@ void main(){
     const rect=world.getBoundingClientRect();
     let w=Math.max(2,Math.round(rect.width*Math.min(devicePixelRatio||1,2)));
     let h=Math.max(2,Math.round(rect.height*Math.min(devicePixelRatio||1,2)));
-    const pxMax=750000;
+    const pxMax=1100000;
     if(w*h>pxMax){const k=Math.sqrt(pxMax/(w*h));w=Math.max(2,Math.floor(w*k));h=Math.max(2,Math.floor(h*k));}
     return{w,h};
   }
@@ -216,8 +230,8 @@ void main(){
   function drawFractal(quick){
     if(!gpuReady)return;
     const sz=ensureSize();
-    const w=quick?Math.max(100,Math.floor(sz.w*.60)):sz.w;
-    const h=quick?Math.max(100,Math.floor(sz.h*.60)):sz.h;
+    const w=quick?Math.max(120,Math.floor(sz.w*.46)):sz.w;
+    const h=quick?Math.max(120,Math.floor(sz.h*.46)):sz.h;
     if(state.h<.000002){drawCPU(w,h);return;}
     try{
       getFrameTexture(w,h);gl.bindFramebuffer(gl.FRAMEBUFFER,framebuffer);gl.viewport(0,0,w,h);
@@ -234,7 +248,7 @@ void main(){
     gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,texture);
     gl.uniform1i(pu.uFractal,0);gl.uniform1f(pu.uTime,time);gl.uniform1f(pu.uIntensity,state.intensity);
     gl.uniform1f(pu.uMotion,state.motion&&!state.reduced?1:0);gl.uniform1f(pu.uMandala,state.mandala?1:0);
-    gl.uniform2f(pu.uResolution,sz.w,sz.h);gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
+    gl.uniform2f(pu.uResolution,sz.w,sz.h);gl.uniform1f(pu.uPalette,state.palette||0.0);gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
   }
   function cpuFallback(){
     // A fresh canvas allows 2D fallback even after a WebGL context was attempted.
@@ -263,8 +277,8 @@ void main(){
     state.viewDirty=true;updateUI();
     if(!gpuReady){if(!quick){drawCPUResponsive();}else{clearTimeout(refineTimer);refineTimer=setTimeout(()=>schedule(false),180);}return;}
     if(quick){
-      if(performance.now()-lastDraw>95){drawFractal(true);lastDraw=performance.now();}
-      clearTimeout(refineTimer);refineTimer=setTimeout(()=>drawFractal(false),240);
+      if(performance.now()-lastDraw>55){drawFractal(true);lastDraw=performance.now();}
+      clearTimeout(refineTimer);refineTimer=setTimeout(()=>drawFractal(false),140);
     }else{clearTimeout(refineTimer);drawFractal(false);}
     drawPost(clock());
   }
@@ -273,12 +287,19 @@ void main(){
     requestAnimationFrame(tick);
     if(document.hidden)return;
     if(!gpuReady)return;
-    if(now-lastFrame<38)return;
+    if(now-lastFrame<16)return;
     lastTravel=now;
-    if(state.travel && state.motion && !state.reduced && now-lastDraw>500 && state.h>2e-6){
-      const dt=Math.min(.8,(now-lastDraw)/1000);
-      state.h=Math.max(2e-6,state.h*Math.exp(-dt*.06));lastDraw=now;drawFractal(true);
-      clearTimeout(refineTimer);refineTimer=setTimeout(()=>drawFractal(false),500);updateUI();
+    if(state.travel && state.motion && !state.reduced && now-lastTravel>28 && state.h>2e-6){
+      const dt=Math.min(.18,(now-lastTravel)/1000);
+      const trip=state.speed||1.8;
+      const pulse=1.0+0.12*Math.sin(now*0.006);
+      state.h=Math.max(2e-6,state.h*Math.exp(-dt*.95*trip*pulse));
+      const drift=state.h*0.28*dt*trip;
+      state.cx+=Math.sin(now*0.00031+state.h*120000.0)*drift*1.4;
+      state.cy+=Math.cos(now*0.00027+state.h*150000.0)*drift;
+      lastTravel=now;
+      if(now-lastDraw>42){drawFractal(true);lastDraw=now;}
+      clearTimeout(refineTimer);refineTimer=setTimeout(()=>drawFractal(false),180);updateUI();
     }
     lastFrame=now;
     drawPost(clock());
@@ -295,10 +316,10 @@ void main(){
   function updateUI(){
     let mag=2.5/state.h;
     $('zoomReadout').textContent='× '+(mag<1e6?new Intl.NumberFormat('es-EC',{maximumFractionDigits:mag<10?1:0}).format(mag):mag.toExponential(2));
-    $('detailVal').textContent=String(state.iterations);$('intensityVal').textContent=Math.round(state.intensity*100)+'%';
+    $('detailVal').textContent=String(state.iterations);$('intensityVal').textContent=Math.round(state.intensity*100)+'%';$('speedVal').textContent=Math.round((state.speed||1)*100)+'%';
     document.querySelectorAll('.portal').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.preset===state.active)));
   }
-  function choose(p){state.cx=p.cx;state.cy=p.cy;state.h=p.h;state.iterations=p.iter;state.active=p.id;$('detail').value=String(p.iter);state.travel=false;$('driftBtn').setAttribute('aria-pressed','false');$('driftBtn').classList.remove('active');schedule(false);}
+  function choose(p){state.cx=p.cx;state.cy=p.cy;state.h=p.h;state.iterations=p.iter;state.palette=(p.palette??state.palette);state.active=p.id;$('detail').value=String(p.iter);state.travel=false;$('driftBtn').setAttribute('aria-pressed','false');$('driftBtn').classList.remove('active');schedule(false);}
   function clampH(h){return Math.max(1e-13,Math.min(8,h));}
   function zoomAt(x,y,factor){const r=world.getBoundingClientRect(),nx=(x-r.left)/r.width-.5,ny=.5-(y-r.top)/r.height;
     const oldH=state.h,newH=clampH(oldH*factor),d=oldH-newH;
@@ -352,10 +373,11 @@ void main(){
     $('infoBtn').addEventListener('click',()=>toggleInfo($('infoPanel').hidden));$('infoClose').addEventListener('click',()=>toggleInfo(false));
     $('playBtn').addEventListener('click',()=>setMotion(!state.motion));
     $('kaleidoBtn').addEventListener('click',()=>{if(!gpuReady){toast('El mandala requiere WebGL');return;}state.mandala=!state.mandala;$('kaleidoBtn').classList.toggle('active',state.mandala);$('kaleidoBtn').setAttribute('aria-pressed',String(state.mandala));if(gpuReady)drawPost(clock());else toast('El mandala requiere WebGL');});
-    $('driftBtn').addEventListener('click',()=>{if(!gpuReady){toast('El viaje requiere WebGL');return;}state.travel=!state.travel;$('driftBtn').classList.toggle('active',state.travel);$('driftBtn').setAttribute('aria-pressed',String(state.travel));if(state.travel&&!state.motion)setMotion(true);toast(state.travel?'Viaje automático activado':'Viaje detenido');});
+    $('driftBtn').addEventListener('click',()=>{if(!gpuReady){toast('El viaje requiere WebGL');return;}state.travel=!state.travel;$('driftBtn').classList.toggle('active',state.travel);$('driftBtn').setAttribute('aria-pressed',String(state.travel));if(state.travel&&!state.motion)setMotion(true);toast(state.travel?'Viaje ácido activado':'Viaje detenido');});
     $('plusBtn').addEventListener('click',()=>zoomCenter(.5));$('minusBtn').addEventListener('click',()=>zoomCenter(2));
     $('captureBtn').addEventListener('click',capture);
     $('intensity').addEventListener('input',e=>{state.intensity=Number(e.target.value)/100;updateUI();if(gpuReady)drawPost(clock());});
+    $('speed').addEventListener('input',e=>{state.speed=Number(e.target.value)/100;updateUI();});
     $('detail').addEventListener('input',e=>{state.iterations=Number(e.target.value);updateUI();clearTimeout(dirtyTimer);dirtyTimer=setTimeout(()=>schedule(false),190);});
     $('reduceBtn').addEventListener('click',()=>{state.reduced=!state.reduced;$('reduceBtn').setAttribute('aria-pressed',String(state.reduced));if(state.reduced){setMotion(false);state.travel=false;$('driftBtn').classList.remove('active');$('driftBtn').setAttribute('aria-pressed','false');}toast(state.reduced?'Movimiento reducido activado':'Movimiento completo disponible');});
   }
