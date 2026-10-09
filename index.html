@@ -68,6 +68,7 @@ body{display:grid;place-items:center;min-height:100vh;min-height:100dvh;}
   let t=0;
   function flash(msg){toast.textContent=msg;toast.classList.add('show');clearTimeout(t);t=setTimeout(()=>toast.classList.remove('show'),2200)}
   document.querySelectorAll('.hit').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();flash(el.dataset.msg)}));
+  document.querySelectorAll('.mobile-layout [data-msg]').forEach(el=>el.addEventListener('click',()=>flash(el.dataset.msg)));
 
   // Cropping uses the very same embedded JPG data URL; no artwork reconstruction.
   const jpg=document.querySelector('.art').getAttribute('src');
